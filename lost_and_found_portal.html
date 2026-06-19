@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FindIt – Lost & Found Portal | FAST-NU</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F1117;
+    --surface: #181C27;
+    --card: #1E2233;
+    --border: #2A2F45;
+    --accent: #6C63FF;
+    --accent-soft: rgba(108,99,255,0.15);
+    --accent2: #00D4AA;
+    --accent2-soft: rgba(0,212,170,0.12);
+    --warn: #FF6B6B;
+    --warn-soft: rgba(255,107,107,0.12);
+    --text: #E8EAF0;
+    --muted: #8A90A8;
+    --faint: #3A4060;
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAVBAR ─── */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,17,23,0.9);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .nav-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: #5a52e0; transform: translateY(-1px); }
+
+  /* ─── PAGES ─── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 80px 40px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: #a89bff;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin-inline: auto;
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+  .btn-lg {
+    padding: 14px 28px;
+    font-size: 1rem;
+    border-radius: var(--radius);
+  }
+  .btn-accent2 {
+    background: var(--accent2);
+    border: none;
+    color: #0F1117;
+    font-family: var(--font-body);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: var(--radius);
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+  .btn-accent2:hover { background: #00bfa0; transform: translateY(-1px); }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    border-top: 1px solid var(--border);
+    padding-top: 40px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
+
+  /* ─── SEARCH BAR ─── */
+  .search-section {
+    padding: 40px 40px 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .search-box {
+    display: flex;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px;
+    align-items: center;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+  .search-box input::placeholder { color: var(--muted); }
+  .filter-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chip:hover, .chip.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* ─── ITEMS GRID ─── */
+  .section {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .item-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .item-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .item-card-img {
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    background: var(--surface);
+  }
+  .item-card-body { padding: 16px; }
+  .item-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  .badge-lost { background: var(--warn-soft); color: #ff8a80; border: 1px solid rgba(255,107,107,0.3); }
+  .badge-found { background: var(--accent2-soft); color: var(--accent2); border: 1px solid rgba(0,212,170,0.3); }
+  .badge-claimed { background: var(--accent-soft); color: #a89bff; border: 1px solid rgba(108,99,255,0.3); }
+  .item-card h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+  .item-meta { color: var(--muted); font-size: 0.82rem; display: flex; flex-direction: column; gap: 4px; }
+  .item-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ─── FORM ─── */
+  .form-page {
+    padding: 40px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .form-page h2 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .form-page p.subtitle {
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+  }
+  .form-row { margin-bottom: 22px; }
+  .form-row label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 12px 14px;
+    transition: border-color 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .form-row input:focus,
+  .form-row select:focus,
+  .form-row textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-row select option { background: var(--surface); }
+  .form-row textarea { resize: vertical; min-height: 100px; }
+  .form-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .type-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .type-toggle button {
+    flex: 1;
+    padding: 12px;
+    background: var(--surface);
+    border: none;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .type-toggle button.active-lost {
+    background: var(--warn-soft);
+    color: #ff8a80;
+  }
+  .type-toggle button.active-found {
+    background: var(--accent2-soft);
+    color: var(--accent2);
+  }
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .upload-area:hover { border-color: var(--accent); color: var(--text); }
+  .upload-area .upload-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+  .form-submit {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    margin-top: 8px;
+  }
+  .safety-note {
+    background: var(--warn-soft);
+    border: 1px solid rgba(255,107,107,0.2);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    color: #ff8a80;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  /* ─── AUTH PAGES ─── */
+  .auth-wrapper {
+    min-height: calc(100vh - 73px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .auth-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .auth-card h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .auth-card p.subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--faint);
+    font-size: 0.8rem;
+    margin: 20px 0;
+  }
+  .auth-divider::before, .auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .auth-switch {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 20px;
+  }
+  .auth-switch a {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* ─── ADMIN ─── */
+  .admin-layout {
+    display: flex;
+    min-height: calc(100vh - 73px);
+  }
+  .admin-sidebar {
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    flex-shrink: 0;
+  }
+  .admin-sidebar h3 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding: 0 8px;
+  }
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+  }
+  .sidebar-link:hover { background: var(--card); color: var(--text); }
+  .sidebar-link.active { background: var(--accent-soft); color: var(--accent); }
+  .admin-main { flex: 1; padding: 32px; overflow-y: auto; }
+  .admin-main h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  .admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .admin-stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .admin-stat-card .num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .admin-stat-card .lbl { color: var(--muted); font-size: 0.82rem; }
+  .admin-table {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: 100%;
+  }
+  .admin-table table { width: 100%; border-collapse: collapse; }
+  .admin-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .admin-table td {
+    padding: 13px 16px;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:hover td { background: var(--surface); }
+  .action-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 6px;
+  }
+  .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .action-btn.danger:hover { border-color: var(--warn); color: var(--warn); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--surface);
+    border: none;
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--border); color: var(--text); }
+  .modal h3 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .modal-item-preview {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .modal-item-preview .icon { font-size: 2.5rem; }
+  .modal-item-preview h4 { font-weight: 600; margin-bottom: 4px; }
+  .modal-item-preview p { color: var(--muted); font-size: 0.85rem; }
+  .contact-info {
+    background: var(--accent-soft);
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-size: 0.9rem;
+    color: #a89bff;
+    line-height: 1.7;
+  }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ─── NOTIFICATION BANNER ─── */
+  .notif-banner {
+    background: var(--accent-soft);
+    border-bottom: 1px solid rgba(108,99,255,0.2);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+    color: #a89bff;
+  }
+  .notif-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .navbar { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 50px 20px 40px; }
+    .stats-bar { gap: 24px; }
+    .section { padding: 24px 20px; }
+    .search-section { padding: 24px 20px 0; }
+    .form-page { padding: 24px 20px; }
+    .form-2col { grid-template-columns: 1fr; }
+    .admin-layout { flex-direction: column; }
+    .admin-sidebar { width: 100%; padding: 16px; display: flex; gap: 8px; overflow-x: auto; }
+    .admin-sidebar h3 { display: none; }
+    .admin-main { padding: 20px; }
+    .auth-wrapper { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NOTIFICATION BANNER -->
+<div class="notif-banner" id="notifBanner">
+  <span class="notif-dot"></span>
+  <strong>Match found!</strong> An item matching your report "Blue ID Card" was posted 2 hours ago.
+  <a onclick="showToast('Opening match details...')" style="color: var(--accent); cursor: pointer; margin-left: auto; font-weight: 600;">View →</a>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" onclick="showPage('home')">
+    <div class="logo-icon">🔍</div>
+    Find<span>It</span>
+  </a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+    <li><a onclick="showPage('browse')" id="nav-browse">Browse Items</a></li>
+    <li><a onclick="showPage('report')" id="nav-report">Report Item</a></li>
+    <li><a onclick="showPage('admin')" id="nav-admin">Admin</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="showPage('login')">Log in</button>
+    <button class="btn-primary" onclick="showPage('register')">Sign up</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-tag">🎓 FAST-NU Campus Portal</div>
+    <h1>Lost something?<br>Let's <em>find it together.</em></h1>
+    <p>A centralized platform for the FAST-NU community to report, search, and reclaim lost items — fast, simple, and secure.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary btn-lg" onclick="showPage('report'); setReportType('lost')">📋 Report Lost Item</button>
+      <button class="btn-accent2 btn-lg" onclick="showPage('report'); setReportType('found')">📦 Report Found Item</button>
+      <button class="btn-ghost btn-lg" onclick="showPage('browse')">🔍 Browse All Items</button>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-num">247</div><div class="stat-label">Items Reported</div></div>
+      <div class="stat"><div class="stat-num">183</div><div class="stat-label">Items Reunited</div></div>
+      <div class="stat"><div class="stat-num">74%</div><div class="stat-label">Success Rate</div></div>
+      <div class="stat"><div class="stat-num">1.2k</div><div class="stat-label">Registered Users</div></div>
+    </div>
+  </section>
+
+  <!-- Recent items -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">Recently Reported</div>
+      <button class="btn-ghost" onclick="showPage('browse')">View all →</button>
+    </div>
+    <div class="items-grid" id="home-grid"></div>
+  </section>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: BROWSE
+══════════════════════════════════════════ -->
+<div class="page" id="page-browse">
+  <div class="search-section">
+    <div class="search-box">
+      <span style="color:var(--muted); padding-left:8px;">🔍</span>
+      <input type="text" placeholder="Search by item name, location, description..." id="searchInput" oninput="filterItems()">
+      <button class="btn-primary" style="flex-shrink:0;" onclick="filterItems()">Search</button>
+    </div>
+    <div class="filter-chips">
+      <span class="chip active" onclick="filterChip(this,'all')">All Items</span>
+      <span class="chip" onclick="filterChip(this,'lost')">🔴 Lost</span>
+      <span class="chip" onclick="filterChip(this,'found')">🟢 Found</span>
+      <span class="chip" onclick="filterChip(this,'Electronics')">📱 Electronics</span>
+      <span class="chip" onclick="filterChip(this,'Documents')">📄 Documents</span>
+      <span class="chip" onclick="filterChip(this,'Accessories')">👜 Accessories</span>
+      <span class="chip" onclick="filterChip(this,'Books')">📚 Books</span>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title" id="browse-count">All Items</div>
+    </div>
+    <div class="items-grid" id="browse-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: REPORT
+══════════════════════════════════════════ -->
+<div class="page" id="page-report">
+  <div class="form-page">
+    <h2>Report an Item</h2>
+    <p class="subtitle">Fill in the details to post your item on the portal.</p>
+
+    <div class="type-toggle">
+      <button id="btn-lost" class="active-lost" onclick="setReportType('lost')">🔴 I Lost Something</button>
+      <button id="btn-found" onclick="setReportType('found')">🟢 I Found Something</button>
+    </div>
+
+    <div class="form-card">
+      <div class="safety-note">
+        ⚠️ <span>For your safety, arrange item handovers in public places such as the security office, main lobby, or other campus common areas.</span>
+      </div>
+      <div class="form-row">
+        <label>Item Name *</label>
+        <input type="text" placeholder="e.g. Blue Samsung Galaxy A53">
+      </div>
+      <div class="form-2col">
+        <div class="form-row">
+          <label>Category *</label>
+          <select>
+            <option value="">Select category</option>
+            <option>Electronics</option>
+            <option>Documents</option>
+            <option>Books</option>
+            <option>Accessories</option>
+            <option>Clothing</option>
+            <option>Keys</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Date *</label>
+          <input type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Location *</label>
+        <input type="text" placeholder="e.g. CS Block, Ground Floor Corridor">
+      </div>
+      <div class="form-row">
+        <label>Description *</label>
+        <textarea placeholder="Describe the item in detail — color, model, any identifying marks, what was in it..."></textarea>
+      </div>
+      <div class="form-row">
+        <label>Upload Photo</label>
+        <div class="upload-area" onclick="showToast('File picker opened (demo)')">
+          <span class="upload-icon">📷</span>
+          Click to upload a photo of the item<br>
+          <small style="color:var(--faint)">PNG, JPG up to 5MB</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Your Contact Email *</label>
+        <input type="email" placeholder="your.email@nu.edu.pk">
+      </div>
+      <button class="btn-primary form-submit" onclick="submitReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: LOGIN
+══════════════════════════════════════════ -->
+<div class="page" id="page-login">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h2>Welcome back 👋</h2>
+      <p class="subtitle">Log in to manage your reports and track claims.</p>
+      <div class="form-row">
+        <label>Email</label>
+        <input type="email" placeholder="you@nu.edu.pk">
+      </div>
+      <div class="form-row">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" style="width:100%; padding:13px; font-size:0.95rem;" onclick="loginUser()">Log In</button>
+      <div class="auth-divider">or</div>
+      <div class="auth-switch">
+        Don't have an account? <a onclick="showPage('register')">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: REGISTER
+══════════════════════════════════════════ -->
+<div class="page" id="page-register">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h2>Create account</h2>
+      <p class="subtitle">Join the FAST-NU Lost & Found community.</p>
+      <div class="form-2col">
+        <div class="form-row">
+          <label>First Name</label>
+          <input type="text" placeholder="Ali">
+        </div>
+        <div class="form-row">
+          <label>Last Name</label>
+          <input type="text" placeholder="Raza">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>University Email</label>
+        <input type="email" placeholder="k220XXXXX@nu.edu.pk">
+      </div>
+      <div class="form-row">
+        <label>Password</label>
+        <input type="password" placeholder="Min. 8 characters">
+      </div>
+      <div class="form-row">
+        <label>Role</label>
+        <select>
+          <option>Student</option>
+          <option>Faculty</option>
+          <option>Staff</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="width:100%; padding:13px; font-size:0.95rem;" onclick="registerUser()">Create Account</button>
+      <div class="auth-switch">
+        Already have an account? <a onclick="showPage('login')">Log in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: ADMIN
+══════════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h3>Admin Panel</h3>
+      <div class="sidebar-link active" onclick="adminTab(this,'dashboard')">📊 Dashboard</div>
+      <div class="sidebar-link" onclick="adminTab(this,'items')">📦 Manage Items</div>
+      <div class="sidebar-link" onclick="adminTab(this,'users')">👥 Users</div>
+      <div class="sidebar-link" onclick="adminTab(this,'claims')">🏷️ Claims</div>
+    </aside>
+    <main class="admin-main">
+      <div id="tab-dashboard">
+        <h2>Admin Dashboard</h2>
+        <div class="admin-stats">
+          <div class="admin-stat-card"><div class="num" style="color:var(--warn)">12</div><div class="lbl">Pending Approval</div></div>
+          <div class="admin-stat-card"><div class="num" style="color:var(--accent2)">37</div><div class="lbl">Active Items</div></div>
+          <div class="admin-stat-card"><div class="num" style="color:var(--accent)">8</div><div class="lbl">Open Claims</div></div>
+          <div class="admin-stat-card"><div class="num" style="color:#a89bff">183</div><div class="lbl">Resolved</div></div>
+        </div>
+        <div class="admin-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Reporter</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="tab-items" style="display:none">
+        <h2>Manage Items</h2>
+        <div class="admin-table">
+          <table>
+            <thead>
+              <tr><th>Item</th><th>Category</th><th>Location</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="admin-items-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="tab-users" style="display:none">
+        <h2>Users</h2>
+        <div class="admin-table">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Reports</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>Malaika Hamid</td><td>k221042@nu.edu.pk</td><td><span class="item-badge badge-claimed">Admin</span></td><td>5</td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Eisha Fatima</td><td>k221081@nu.edu.pk</td><td><span class="item-badge badge-found">Student</span></td><td>3</td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Minahil Fatima</td><td>k221099@nu.edu.pk</td><td><span class="item-badge badge-found">Student</span></td><td>2</td><td><button class="action-btn">View</button></td></tr>
+              <tr><td>Ali Raza</td><td>k220301@nu.edu.pk</td><td><span class="item-badge badge-found">Student</span></td><td>1</td><td><button class="action-btn">View</button><button class="action-btn danger">Block</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="tab-claims" style="display:none">
+        <h2>Claims</h2>
+        <div class="admin-table">
+          <table>
+            <thead><tr><th>Item</th><th>Claimant</th><th>Filed On</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>Blue ID Card</td><td>Ali Raza</td><td>2025-06-10</td><td><span class="item-badge badge-lost">Pending</span></td><td><button class="action-btn">Approve</button><button class="action-btn danger">Reject</button></td></tr>
+              <tr><td>AirPods Case</td><td>Sara Ahmed</td><td>2025-06-09</td><td><span class="item-badge badge-found">Approved</span></td><td><button class="action-btn">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ITEM DETAIL MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="itemModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modal-title">Item Details</h3>
+    <div class="modal-item-preview">
+      <div class="icon" id="modal-icon">📱</div>
+      <div>
+        <h4 id="modal-name">Item Name</h4>
+        <p id="modal-meta">Location · Date</p>
+      </div>
+    </div>
+    <p id="modal-desc" style="color:var(--muted); font-size:0.9rem; line-height:1.7; margin-bottom:20px;"></p>
+    <div class="contact-info" id="modal-contact"></div>
+    <div style="margin-top:20px; display:flex; gap:10px;">
+      <button class="btn-primary" style="flex:1;" onclick="claimItem()">Claim This Item</button>
+      <button class="btn-ghost" style="flex:1;" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── DATA ───
+  const items = [
+    { id:1, name:"Blue Samsung Galaxy A53", type:"lost", category:"Electronics", icon:"📱", location:"CS Block, 2nd Floor", date:"2025-06-15", desc:"Blue phone with a cracked bottom corner. Had a transparent cover with a small keychain attached. Contains important uni documents.", reporter:"Ali Raza", contact:"k220301@nu.edu.pk" },
+    { id:2, name:"Student ID Card", type:"found", category:"Documents", icon:"🪪", location:"Main Cafeteria", date:"2025-06-14", desc:"Found near the cashier counter. Belongs to a female student – name is partially visible. Handed to the security office.", reporter:"Sara Ahmed", contact:"k221055@nu.edu.pk" },
+    { id:3, name:"AirPods Pro Case (white)", type:"lost", category:"Electronics", icon:"🎧", location:"Library, 3rd Floor", date:"2025-06-13", desc:"White AirPods Pro with a black silicone cover. Left it on one of the study tables near the window.", reporter:"Umar Khalid", contact:"k220480@nu.edu.pk" },
+    { id:4, name:"Red Backpack", type:"found", category:"Accessories", icon:"🎒", location:"Lab 3, A Block", date:"2025-06-13", desc:"Red Hp backpack found on a chair after the 5pm batch lab. Contains a notebook and pencil case inside.", reporter:"Hina Shah", contact:"k221200@nu.edu.pk" },
+    { id:5, name:"Data Structures Textbook", type:"lost", category:"Books", icon:"📚", location:"CS Dept. Corridor", date:"2025-06-12", desc:"Yellow-highlighted textbook by Goodrich. Has my name written inside – Minahil Fatima. Please return!", reporter:"Minahil Fatima", contact:"k221099@nu.edu.pk" },
+    { id:6, name:"Silver Car Keys", type:"found", category:"Keys", icon:"🔑", location:"Parking Lot B", date:"2025-06-11", desc:"Toyota keys with a black fob and a small green keychain found in parking lot B. Submitted to front desk.", reporter:"Admin Office", contact:"admin@nu.edu.pk" },
+    { id:7, name:"Glasses – Black Frame", type:"lost", category:"Accessories", icon:"👓", location:"Seminar Hall", date:"2025-06-10", desc:"Black rectangular prescription glasses. Lost them during the guest speaker event. Reward offered.", reporter:"Eisha Fatima", contact:"k221081@nu.edu.pk" },
+    { id:8, name:"USB Flash Drive 32GB", type:"found", category:"Electronics", icon:"💾", location:"Computer Lab 1", date:"2025-06-09", desc:"Blue Sandisk USB drive found on the table after a practical session. Contains what looks like project files.", reporter:"Lab Assistant", contact:"lab@nu.edu.pk" },
+  ];
+
+  let activeFilter = 'all';
+
+  function renderGrid(containerId, itemList) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = itemList.map(item => `
+      <div class="item-card" onclick="openModal(${item.id})">
+        <div class="item-card-img">${item.icon}</div>
+        <div class="item-card-body">
+          <span class="item-badge badge-${item.type}">${item.type === 'lost' ? '🔴 Lost' : '🟢 Found'}</span>
+          <h3>${item.name}</h3>
+          <div class="item-meta">
+            <span>📍 ${item.location}</span>
+            <span>📅 ${item.date}</span>
+            <span>🏷️ ${item.category}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderAdminTable() {
+    const tbody = document.getElementById('admin-tbody');
+    tbody.innerHTML = items.slice(0,6).map(item => `
+      <tr>
+        <td>${item.icon} ${item.name}</td>
+        <td><span class="item-badge badge-${item.type}">${item.type}</span></td>
+        <td>${item.reporter}</td>
+        <td>${item.date}</td>
+        <td><span class="item-badge badge-found">Active</span></td>
+        <td>
+          <button class="action-btn" onclick="showToast('Opening item details...')">View</button>
+          <button class="action-btn" onclick="showToast('Item approved ✓')">Approve</button>
+          <button class="action-btn danger" onclick="showToast('Item removed.')">Remove</button>
+        </td>
+      </tr>
+    `).join('');
+
+    const itbody = document.getElementById('admin-items-tbody');
+    itbody.innerHTML = items.map(item => `
+      <tr>
+        <td>${item.icon} ${item.name}</td>
+        <td>${item.category}</td>
+        <td>${item.location}</td>
+        <td><span class="item-badge badge-${item.type}">${item.type}</span></td>
+        <td>
+          <button class="action-btn" onclick="showToast('Editing item...')">Edit</button>
+          <button class="action-btn danger" onclick="showToast('Item deleted.')">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterItems() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    let filtered = items.filter(i => {
+      const matchQ = !q || i.name.toLowerCase().includes(q) || i.location.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q);
+      const matchF = activeFilter === 'all' || i.type === activeFilter || i.category === activeFilter;
+      return matchQ && matchF;
+    });
+    renderGrid('browse-grid', filtered);
+    document.getElementById('browse-count').textContent = `${filtered.length} item${filtered.length !== 1 ? 's' : ''} found`;
+  }
+
+  function filterChip(el, val) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    activeFilter = val;
+    filterItems();
+  }
+
+  // ─── PAGE NAV ───
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + name);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  // ─── MODAL ───
+  function openModal(id) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    document.getElementById('modal-title').textContent = item.type === 'lost' ? '🔴 Lost Item Report' : '🟢 Found Item Report';
+    document.getElementById('modal-icon').textContent = item.icon;
+    document.getElementById('modal-name').textContent = item.name;
+    document.getElementById('modal-meta').textContent = `${item.location} · ${item.date}`;
+    document.getElementById('modal-desc').textContent = item.desc;
+    document.getElementById('modal-contact').innerHTML = `<strong>Reported by:</strong> ${item.reporter}<br><strong>Contact:</strong> ${item.contact}<br><br><em>Please use your university email to contact them.</em>`;
+    document.getElementById('itemModal').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('itemModal').classList.remove('open');
+  }
+  document.getElementById('itemModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ─── TOAST ───
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ─── REPORT TYPE ───
+  function setReportType(type) {
+    const btnLost = document.getElementById('btn-lost');
+    const btnFound = document.getElementById('btn-found');
+    btnLost.className = type === 'lost' ? 'active-lost' : '';
+    btnFound.className = type === 'found' ? 'active-found' : '';
+  }
+
+  function submitReport() {
+    showToast('✅ Report submitted! You\'ll be notified when a match is found.');
+    setTimeout(() => showPage('browse'), 1200);
+  }
+
+  function loginUser() {
+    showToast('✅ Logged in successfully!');
+    setTimeout(() => showPage('home'), 800);
+  }
+
+  function registerUser() {
+    showToast('✅ Account created! Please verify your email.');
+    setTimeout(() => showPage('login'), 800);
+  }
+
+  function claimItem() {
+    closeModal();
+    showToast('📨 Claim submitted! Admin will review within 24 hours.');
+  }
+
+  function adminTab(el, tab) {
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    el.classList.add('active');
+    ['dashboard','items','users','claims'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+    });
+  }
+
+  // ─── INIT ───
+  renderGrid('home-grid', items.slice(0, 4));
+  renderGrid('browse-grid', items);
+  renderAdminTable();
+  document.getElementById('browse-count').textContent = `${items.length} items found`;
+</script>
+</body>
+</html>
